@@ -2,7 +2,6 @@ const Binance = require('binance-api-node').default;
 const dotenv = require('dotenv');
 dotenv.config();
 
-
 const client = Binance({
     apiKey: process.env.API_KEY,
     apiSecret: process.env.API_SECRET,
@@ -50,7 +49,6 @@ const openPosition = async function (pair, quantity, positionSide) {
         quantity: quantity,
     });
 }
-
 
 const getActivePosition = async function (pair) {
     const positions = await client.futuresPositionRisk({

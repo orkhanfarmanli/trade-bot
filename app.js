@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const utils = require('./utils/all');
+const dotenv = require('dotenv');
 const app = express();
+dotenv.config();
 
 // use the express-static middleware
 app.use(express.static("public"));
@@ -12,6 +14,10 @@ app.get("/", function (req, res) {
 });
 
 app.post('/order', async (req, res) => {
+  if (req.body.API_KEY != process.env.APP_KEY) {
+    res.sendStatus(500);
+  }
+
   const pair = req.body.pair;
   const positionSide = req.body.positionSide;
   const activePosition = await utils.getActivePosition(pair);
@@ -37,8 +43,7 @@ app.post('/order', async (req, res) => {
 
   console.log(position);
 
-  res.send('{status:200}');
+  res.sendStatus(200);
 });
 
-app.listen(process.env.PORT || 3000, 
-	() => console.log("Server is running..."));
+app.listen(process.env.PORT || 3000, () => console.log("Server is running..."));
