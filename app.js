@@ -1,18 +1,18 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 const utils = require('./utils/all')
-
 const app = express();
-const port = 3000;
 
+// use the express-static middleware
+app.use(express.static("public"));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello there!');
+
+app.get("/", function (req, res) {
+  res.send("<h1>Hello there!</h1>")
 })
 
 app.post('/order', async (req, res) => {
-
   const pair = req.body.pair;
   const positionSide = req.body.positionSide;
   const activePosition = await utils.getActivePosition(pair);
@@ -43,6 +43,5 @@ app.post('/order', async (req, res) => {
   res.send('{status:200}');
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+app.listen(process.env.PORT || 3000, 
+	() => console.log("Server is running..."));
