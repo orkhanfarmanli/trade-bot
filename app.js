@@ -7,6 +7,10 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+  res.send('Hello there!');
+})
+
 app.post('/order', async (req, res) => {
 
   const pair = req.body.pair;
