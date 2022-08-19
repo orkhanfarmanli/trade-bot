@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "binance-api-node": "^0.11.43",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1"
   }
 }

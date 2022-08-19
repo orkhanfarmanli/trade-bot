@@ -1,16 +1,15 @@
-const express = require('express')
+const express = require('express');
 const bodyParser = require('body-parser');
-const utils = require('./utils/all')
+const utils = require('./utils/all');
 const app = express();
 
 // use the express-static middleware
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
-
 app.get("/", function (req, res) {
-  res.send("<h1>Hello there!</h1>")
-})
+  res.send("<h1>Hello there!</h1>");
+});
 
 app.post('/order', async (req, res) => {
   const pair = req.body.pair;
@@ -30,18 +29,16 @@ app.post('/order', async (req, res) => {
   // opening position with 50% of account balance
   const quantity = parseFloat(balance / 2 / coinPrice * 10).toFixed(assetPrecision);
 
-  console.log(pair + ' price: ' + coinPrice);
-  console.log('account balance: ' + balance);
-  console.log("quantity: " + quantity);
-
+  // close current active position
   await utils.closeActivePosition(activePosition);
 
+  // open a new position
   const position = await utils.openPosition(pair, quantity, positionSide);
 
   console.log(position);
 
   res.send('{status:200}');
-})
+});
 
 app.listen(process.env.PORT || 3000, 
 	() => console.log("Server is running..."));

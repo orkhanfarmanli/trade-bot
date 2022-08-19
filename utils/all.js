@@ -1,12 +1,13 @@
-const Binance = require('binance-api-node').default
+const Binance = require('binance-api-node').default;
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 const client = Binance({
-    apiKey: '4ac3599f4f995b3c8a8173a74c38dc3ccb3b2647dfe36d047ba5e5358e740458',
-    apiSecret: 'bc98ce79ee924d4dbbea14a15a951af97527e447c80d5000d77186825c649251',
-    httpFutures: 'https://testnet.binancefuture.com'
-})
-
+    apiKey: process.env.API_KEY,
+    apiSecret: process.env.API_SECRET,
+    httpFutures: process.env.HTTP_FUTURES
+});
 
 const getAccountBalance = async function () {
     const futuresAccountBalance = await client.futuresAccountBalance();
@@ -39,9 +40,8 @@ const openPosition = async function (pair, quantity, positionSide) {
             marginType: 'ISOLATED',
         })
     } catch (error) {
-        // console.log(error);
+        console.log(error);
     }
-
 
     return await client.futuresOrder({
         symbol: pair,
@@ -74,11 +74,11 @@ const closeActivePosition = async function (activePosition) {
     let positionSide = activePosition.positionAmt > 0 ? "SELL" : "BUY";
     let amount = Math.abs(activePosition.positionAmt);
 
-    await openPosition(activePosition.symbol, amount, positionSide)
+    await openPosition(activePosition.symbol, amount, positionSide);
 }
 
 const getAssetPrecision = async function (asset) {
-    var filtered = await client.futuresExchangeInfo()
+    var filtered = await client.futuresExchangeInfo();
     return Object.values(filtered.symbols).filter(O => O.symbol === asset)[0].quantityPrecision;
 }
 
