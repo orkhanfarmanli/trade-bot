@@ -21,7 +21,7 @@ app.post('/order', async (req, res) => {
   const pair = req.body.pair;
   const positionSide = req.body.positionSide;
   const activePosition = await utils.getActivePosition(pair);
-  const currentPosition = activePosition.positionAmt > 0 ? "SELL" : "BUY";
+  const currentPosition = activePosition.positionAmt > 0 ? "BUY" : "SELL";
 
   // don't change anything if the current position is the same as the requested
   if (currentPosition === positionSide) {
