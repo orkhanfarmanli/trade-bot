@@ -16,6 +16,7 @@ app.get("/", function (req, res) {
 app.post('/order', async (req, res) => {
   if (req.body.API_KEY != process.env.APP_KEY) {
     res.sendStatus(500);
+    return;
   }
 
   const pair = req.body.pair;
