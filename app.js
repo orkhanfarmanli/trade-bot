@@ -21,11 +21,17 @@ app.post('/order', async (req, res) => {
   const pair = req.body.pair;
   const positionSide = req.body.positionSide;
   const activePosition = await utils.getActivePosition(pair);
+  const currentPosition = activePosition.positionAmt > 0 ? "SELL" : "BUY";
 
-  // get account balance
+  // don't change anything if the current position is the same as the requested
+  if (currentPosition === positionSide) {
+    res.sendStatus(200);
+  }
+
+  // get the account balance
   const balance = await utils.getAccountBalance();
 
-  // get coin price
+  // get the coin price
   const priceObj = await utils.client.avgPrice({
     symbol: pair
   });
@@ -37,6 +43,9 @@ app.post('/order', async (req, res) => {
 
   // close current active position
   await utils.closeActivePosition(activePosition);
+
+  // wait for 2 seconds for the position to be closed in case there's a delay
+  await new Promise(r => setTimeout(r, 2000));
 
   // open a new position
   const position = await utils.openPosition(pair, quantity, positionSide);
