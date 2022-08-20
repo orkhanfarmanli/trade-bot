@@ -26,6 +26,7 @@ app.post('/order', async (req, res) => {
   // don't change anything if the current position is the same as the requested
   if (currentPosition === positionSide) {
     res.sendStatus(200);
+    return;
   }
 
   // get the account balance
