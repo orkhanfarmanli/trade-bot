@@ -19,12 +19,15 @@ app.post('/order', async (req, res) => {
     return;
   }
 
+  // wait for 2 seconds in case there are multiple alerts being triggered
+  await new Promise(r => setTimeout(r, 2000));
+
   const pair = req.body.pair;
   const positionSide = req.body.positionSide;
   const activePosition = await utils.getActivePosition(pair);
   const currentPosition = activePosition.positionAmt > 0 ? "BUY" : "SELL";
 
-  // don't change anything if the current position is the same as the requested
+  // prevent opening a position if the current position type is the same as the requested
   if (currentPosition === positionSide) {
     res.sendStatus(200);
     return;

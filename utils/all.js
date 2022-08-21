@@ -57,11 +57,7 @@ const getActivePosition = async function (pair) {
 
     let activePositions = positions.filter(position => position.entryPrice > 0);
 
-    if (activePositions.length > 0) {
-        return activePositions[0];
-    }
-
-    return [];
+    return activePositions.length > 0 ? activePositions[0] : [];
 }
 
 const closeActivePosition = async function (activePosition) {
@@ -69,6 +65,7 @@ const closeActivePosition = async function (activePosition) {
         return;
     }
 
+    // opening a counter position to close the old one
     let positionSide = activePosition.positionAmt > 0 ? "SELL" : "BUY";
     let amount = Math.abs(activePosition.positionAmt);
 
@@ -76,8 +73,8 @@ const closeActivePosition = async function (activePosition) {
 }
 
 const getAssetPrecision = async function (asset) {
-    var filtered = await client.futuresExchangeInfo();
-    return Object.values(filtered.symbols).filter(O => O.symbol === asset)[0].quantityPrecision;
+    var assets = await client.futuresExchangeInfo();
+    return Object.values(assets.symbols).filter(O => O.symbol === asset)[0].quantityPrecision;
 }
 
 
