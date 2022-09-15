@@ -14,10 +14,18 @@ app.get("/", function (req, res) {
 });
 
 app.post('/order', async (req, res) => {
+  if (process.env.TRADING_NOW) {
+    res.sendStatus(500);
+    return;
+  }
+
   if (req.body.API_KEY != process.env.APP_KEY) {
     res.sendStatus(500);
     return;
   }
+
+  // set the trading flag to prevent double position
+  process.env.TRADING_NOW = true;
 
   // wait for 2 seconds in case there are multiple alerts being triggered
   await new Promise(r => setTimeout(r, 2000));
@@ -29,6 +37,7 @@ app.post('/order', async (req, res) => {
 
   // prevent opening a position if the current position type is the same as the requested
   if (currentPosition === positionSide) {
+    process.env.TRADING_NOW = false;
     res.sendStatus(200);
     return;
   }
@@ -50,12 +59,14 @@ app.post('/order', async (req, res) => {
   await utils.closeActivePosition(activePosition);
 
   // wait for 2 seconds for the position to be closed in case there's a delay
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 3000));
 
   // open a new position
   const position = await utils.openPosition(pair, quantity, positionSide);
 
   console.log(position);
+
+  process.env.TRADING_NOW = false;
 
   res.sendStatus(200);
 });
