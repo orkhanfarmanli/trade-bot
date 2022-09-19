@@ -14,7 +14,7 @@ app.get("/", function (req, res) {
 });
 
 app.post('/order', async (req, res) => {
-  if (process.env.TRADING_NOW) {
+  if (eval(process.env.TRADING_NOW)) {
     res.sendStatus(500);
     return;
   }
